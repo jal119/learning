@@ -1,4 +1,4 @@
-Welcome back, and in this lesson,
+Welcome back, and in this lesson, this a great lession to start with man
 we're going to be talking about pipelines in Jenkins.
 In the Jenkins build, we have a set process
 and typically that process follows this workflow.
@@ -213,4 +213,4 @@ to help you build your pipeline.
 In the next lesson,
 we're going to be talking about notifications
 and doing maintenance in Jenkins.
-My name is Mike, and I'll see you in the next one.
+My name is Mike, and I'll see you in the next one.
