@@ -1,0 +1,216 @@
+Welcome back, and in this lesson,
+we're going to be talking about pipelines in Jenkins.
+In the Jenkins build, we have a set process
+and typically that process follows this workflow.
+So we get some code from source code management,
+we test it, we create an artifact,
+we go to a downstream build, that build runs,
+we get a final artifact, which is our software
+that we are going to build
+and we kind of keep following this circle of build.
+Now we could go and configure this
+in the graphical user interface
+but if we could express this in code,
+it would streamline our process.
+So what we do when we create a pipeline
+is we define the build in code.
+Pipelines are made up of stages
+and so each stage represents part of that process.
+We get source code, we build and we test.
+The smallest component of a pipeline is a step.
+Each stage is made up of one or more steps.
+There are 2 types of pipelines in Jenkins.
+There is a scripted pipeline.
+You can see a scripted pipeline
+because everything's enclosed inside of a node block.
+Scripted pipelines can use
+the Groovy domain specific language to define the pipeline.
+There's also a lack of the steps keyword.
+So if you're trying to figure out
+if a pipeline is scripted or declarative,
+look for these things.
+It starts with node and it doesn't have the steps keyword.
+A declarative pipeline was designed to be much simpler.
+It's much less confusing.
+It's very restrictive though,
+in that you have to define your stages
+in a very specific way.
+Declarative pipelines start with the pipeline keyword.
+They use a declarative syntax,
+which is a special syntax used to define the pipeline,
+and inside of the pipeline, you will see steps.
+So let's go look at what this looks like
+on an actual Jenkins server.
+So here we have a clean Jenkins server.
+I'm going to go ahead and make a new item
+and I'm going to call it pipe.
+We'll make it a pipeline.
+The first thing we'll notice
+is there are fewer tabs across the top.
+We don't have build environment, etc., across the top.
+The reason why is we only need to know how to trigger it
+and then we need to define it in the pipeline.
+Now there's a couple of ways
+that you can get a pipeline into Jenkins.
+One is with a pipeline script, which you can write,
+right here in this window.
+I suggest that you only use this for testing things.
+This is not how you want to do a pipeline.
+If you want to see examples of pipelines,
+you can click on the examples here.
+This will give you a declarative pipeline.
+Notice a declarative pipeline starts with pipeline
+and has steps defined.
+You can also look at a scripted pipeline.
+Notice it starts with node
+and you do not see the keyword step in the pipeline.
+Now if you're using this to create a pipeline
+and you need help with any of the pipeline syntax,
+you can use the pipeline syntax generator.
+So over here, there is a tool
+and I've opened it in a new tab,
+and this will help you to create a pipeline.
+So if I wanted a declarative directive generator
+and I wanted to go down here
+and insert a build tool into my build,
+and I wanted to use Ant,
+I could pick the version of Ant
+that's installed on the system,
+tell it to generate that directive
+and then I can copy this,
+go back to my pipeline and inside of a step or a stage,
+wherever I would need to put this, I could simply go in
+and paste my declarative statement
+to add that to my pipeline.
+Now this doesn't actually get me ahead in the real world
+because what I want to do
+is I want to completely define my job as code
+and then simply tell Jenkins to execute that code.
+I want my pipeline to come from a source code manager.
+I want to store the pipeline definition
+with the code that it built.
+So if we go back and we look here,
+this is a Git repository called some_java.
+We've seen this before,
+and inside of this, I have a Jenkins file.
+The Jenkins file contains my pipeline definition.
+Now I could copy and paste this
+into my pipeline scripted area here
+and it would work exactly the same, but this doesn't help me
+because I want it to be version controlled. I want
+it to be stored with the code that it's building. So what
+I'm going to do is I'm going to go back to this repository
+and I'm going to copy the clone command from this repository
+and I'm going to look, the branch that I'm on is pipeline.
+So let's go back to Jenkins.
+I'm going to go pipeline script from SCM.
+Git is my SCM.
+And remember that the list of source code managers here
+can be expanded by using plugin.
+I'm going to paste that there and click outside the box
+to make sure that that error goes away.
+Then down here,
+I'm going to tell it that I want to clone pipeline
+because that's where the Jenkins file is located.
+And the script path I'm looking for is that Jenkins file.
+It could be named something else,
+but the standard naming convention is Jenkins file
+and you will hear a pipeline definition file,
+a pipeline script file referred to as a Jenkins file
+because Jenkins is designed to interpret those files.
+So now if I save this
+and I build now, we can watch what happens.
+We'll see that it grabs the Jenkins file,
+it goes through its clone process
+and it starts working through the pipeline stages.
+Now this pipeline errored, that's okay.
+It's because we don't have some scaffolding in place
+for the J unit tests.
+And we'll notice too,
+that if we go back to the build page for the project,
+we'll see that we have what we declared in the pipeline.
+Now you'll notice that the checkouts doubled,
+because the first thing we told it to
+was go get the Jenkins file.
+Then in the Jenkins file, it tells it clonegit,
+which is where it goes and gets the repository.
+So we actually double that
+because we have to go get the code first.
+But what I want you to notice is
+if we look in our Jenkins file,
+we will see that this stage is called clonegit.
+This stage doesn't have a name
+but it does have with Ant.
+This stage is called testing.
+So if we go back here, we'll see clonegit.
+This stage is just called error
+because we didn't give it a name and it errored out.
+And then we'll see this stage called testing.
+That's the process of running through our pipeline.
+Now if we needed to change some configuration in this build,
+we would go to our repository, we would clone it,
+we would update the Jenkins file,
+we would commit that Jenkins file.
+If we had webhooks on that repository,
+build would automatically run for me.
+This is the advantage of the pipeline.
+It's completely automated.
+It is build as code.
+One of the other things that you can do
+is you can create a multibranch pipeline.
+In a multibranch pipeline,
+Jenkins will actually go and scan all of the branches
+for Jenkins files and go and look
+and see which one has Jenkins files
+and then run those builds.
+So here we see that it is actually scanning those branches,
+looking for a Jenkins file.
+In the branch pipeline, it found a Jenkins file.
+And if I go back to multi,
+it now looks like a folder
+because inside of this project, here is pipeline.
+This is the build that just ran
+and it looks the same as the other pipeline
+because it used that Jenkins file.
+It is a repeatable build.
+A multibranch pipeline will scan
+all the branches of a repository
+and automatically create builds when it can,
+if it locates a pipeline file.
+By default, that's called a Jenkins file.
+And so if it finds a Jenkins file in a branch,
+it will create builds for it.
+This means that if you have a pre-production branch,
+a production branch, you can run a multibranch pipeline
+and it will build all those branches
+where it finds a Jenkins file automatically.
+So real quickly, let's look at what we've talked about.
+Pipeline defines a workflow.
+So normally you would configure your job,
+you configure your project in the graphical user interface.
+Pipelines take the place of that
+and allow you to version your configurations
+and store that configuration
+in the same place you store your code
+in your source code manager.
+When you create a multibranch pipeline,
+that pipeline will go out
+and scan all of your branches in a repository
+and for every branch that it finds a pipeline definition,
+a Jenkins file, it will create a build for that branch.
+Pipelines have stages.
+You can see the stages defined here.
+Stages consist of steps.
+A step is the smallest part of a pipeline.
+Remember though, that there's two kinds of pipelines.
+There's a scripted pipeline
+that starts with the keyword node.
+There's also a declarative pipeline
+which starts with the pipeline keyword
+and snippets of code can be produced
+with the directive generator or the syntax generator
+to help you build your pipeline.
+In the next lesson,
+we're going to be talking about notifications
+and doing maintenance in Jenkins.
+My name is Mike, and I'll see you in the next one.
